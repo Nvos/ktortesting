@@ -13,43 +13,6 @@ import java.util.*
 import java.util.stream.IntStream
 import kotlin.streams.toList
 
-class PairExpression<L,R>(private val first: Expression<L>, private val second: Expression<R>) : Expression<Pair<L,R>>() {
-    override fun toQueryBuilder(queryBuilder: QueryBuilder) {
-       queryBuilder.append("(${first}, ${second}})")
-    }
-}
-
-infix fun <P1, P2> PairExpression<P1, P2>.greater(other: PairExpression<P1, P2>): GreaterOp = GreaterOp(this, other)
-
-//class PairExpression<L,R>(val first: Expression<L>, val second: Expression<R>) : Expression<Pair<L,R>>() {
-//    override fun toSQL(queryBuilder: QueryBuilder): String =
-//        "(${first.toSQL(queryBuilder)}, ${second.toSQL(queryBuilder)})"
-//}
-//
-//fun <L,R> PairExpression<L, R>.inList(list: List<PairExpression<L,R>>) = object : Op<Boolean>() {
-//    override fun toSQL(queryBuilder: QueryBuilder): String {
-//        return when(list.size) {
-//            0 -> "FALSE"
-//            1 -> "${this.toSQL(queryBuilder)} = ${list[0].toSQL(queryBuilder)}"
-//            else -> list.joinToString(",", prefix = "${this.toSQL(queryBuilder)} in (", postfix = ")") {
-//                it.toSQL(queryBuilder)
-//            }
-//        }
-//    }
-//}
-//
-//infix fun <L,R> Expression<L>.to(exp2: Expression<R>) = PairExpression(this, exp2)
-//
-//fun main(args: Array<String>) {
-//    val FooTable = object : Table() {
-//        val x = integer("x")
-//        val y = integer("y")
-//    }
-//
-//    FooTable.select {
-//        (FooTable.x to FooTable.y).inList(listOf(intParam(1) to intParam(2)))
-//    }
-//}
 
 
 fun initDb() {
@@ -63,7 +26,7 @@ fun initDb() {
         var index = 0L
         UserTable.batchInsert(IntStream.range(0, 100).toList().map { "User${it}" }) {
             this[UserTable.name] = it
-            this[UserTable.createdAt] = ZonedDateTime.now(ZoneId.of("UTC")).minusSeconds(index)
+            this[UserTable.createdAt] = LocalDateTime.now(ZoneId.of("UTC")).plusMinutes(index)
             index++
         }
     }

@@ -192,7 +192,7 @@ sealed class BaseResource {
 }
 
 @Serializable
-class UserDto(
+data class UserDto(
   @Serializable(with = UUIDSerializer::class) override val id: UUID,
   @Serializable(with = LocalDateTimeSerializer::class) override val createdAt: LocalDateTime,
   val name: String
@@ -200,7 +200,7 @@ class UserDto(
     companion object {
         fun fromRow(row: ResultRow) = UserDto(
           row[UserTable.id].value,
-          row[UserTable.createdAt].toLocalDateTime(),
+          row[UserTable.createdAt],
           row[UserTable.name],
         )
     }
